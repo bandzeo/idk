@@ -1,0 +1,219 @@
+import asyncio
+import datetime
+import functools
+import io
+import json
+import os
+
+cmd = 'mode 70,20'
+os.system(cmd)
+import random
+import re
+import string
+import urllib.parse
+import urllib.request
+import time
+from urllib import parse, request
+from itertools import cycle
+from bs4 import BeautifulSoup as bs4
+from os import system
+import ctypes
+ctypes.windll.kernel32.SetConsoleTitleW("custom status [ made by st]")
+import aiohttp
+import colorama
+import discord
+import requests
+from PIL import Image
+from colorama import Fore
+from discord.ext import commands
+from discord.utils import get
+from gtts import gTTS
+
+class SELFBOT():
+    __version__ = 1
+
+
+with open('config.json') as f:
+    config = json.load(f)
+
+token = config.get('token')
+password = config.get('password')
+prefix = config.get('prefix')
+
+
+
+stream_url = "https://www.twitch.tv/nax"
+tts_language = "en"
+
+start_time = datetime.datetime.utcnow()
+loop = asyncio.get_event_loop()
+
+
+
+
+
+
+def startprint():
+
+
+
+    print(f'''{Fore.RESET}
+
+
+
+
+
+                  {Fore.BLUE}
+ ███████╗ ████████╗  █████╗  ████████╗ ██╗   ██╗ ███████╗
+ ██╔════╝ ╚══██╔══╝ ██╔══██╗ ╚══██╔══╝ ██║   ██║ ██╔════╝
+ ███████╗    ██║    ███████║    ██║    ██║   ██║ ███████╗
+ ╚════██║    ██║    ██╔══██║    ██║    ██║   ██║ ╚════██║
+ ███████║    ██║    ██║  ██║    ██║    ╚██████╔╝ ███████║
+ ╚══════╝    ╚═╝    ╚═╝  ╚═╝    ╚═╝     ╚═════╝  ╚══════╝made by st
+
+                                                                                                               
+{Fore.BLUE}[{Fore.RESET}User{Fore.BLUE}] {Fore.WHITE}{Nax.user.name}#{Nax.user.discriminator}  {Fore.BLUE}{Fore.RESET}
+{Fore.BLUE}[{Fore.RESET}Prefix{Fore.BLUE}] {Fore.WHITE}{Nax.command_prefix}       {Fore.BLUE}[{Fore.RESET}Note{Fore.BLUE}] {Fore.WHITE}Fuck TOS add 1vn#0076
+
+
+                                ''' + Fore.RESET)
+
+
+def Clear():
+    os.system('cls')
+
+
+Clear()
+
+
+def Init():
+    token = config.get('token')
+    try:
+        Nax.run(token, bot=False, reconnect=True)
+        os.system(f'title (st streaming self bot ) - Version {SELFBOT.__version__}')
+    except discord.errors.LoginFailure:
+        print(f"{Fore.BLUE}[ERROR] {Fore.BLUE}Invalid token" + Fore.RESET)
+        os.system('pause >NUL')
+
+
+class Login(discord.Client):
+    async def on_connect(self):
+        guilds = len(self.guilds)
+        users = len(self.users)
+        print("")
+        print(f"Connected to: [{self.user.name}]")
+        print(f"Token: {self.http.token}")
+        print(f"Guilds: {guilds}")
+        print(f"Users: {users}")
+        print("-------------------------------")
+        await self.logout()
+
+
+def async_executor():
+    def outer(func):
+        @functools.wraps(func)
+        def inner(*args, **kwargs):
+            thing = functools.partial(func, *args, **kwargs)
+            return loop.run_in_executor(None, thing)
+
+        return inner
+
+    return outer
+
+toe = config.get('token')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+colorama.init()
+Nax = discord.Client()
+Nax = commands.Bot(description='st self streaming status ', command_prefix=prefix, self_bot=True)
+
+
+Nax.remove_command('help')
+
+
+@Nax.event
+async def on_connect():
+    Clear()
+    startprint()
+
+
+
+
+@Nax.command()
+async def purge(ctx, amount: int):
+    await ctx.message.delete()
+    async for message in ctx.message.channel.history(limit=amount).filter(lambda m: m.author == Nax.user).map(
+            lambda m: m):
+        try:
+            await message.delete()
+        except:
+            pass
+
+
+
+
+
+@Nax.command(aliases=["streaming", "s"])
+async def stream(ctx, *, message):
+    await ctx.message.delete()
+    stream = discord.Streaming(
+        name=message,
+        url=stream_url,
+    )
+    await Nax.change_presence(activity=stream)
+
+
+@Nax.command(alises=["game", "p"])
+async def playing(ctx, *, message):
+    await ctx.message.delete()
+    game = discord.Game(
+        name=message
+    )
+    await Nax.change_presence(activity=game)
+
+
+@Nax.command(aliases=["listen", "l"])
+async def listening(ctx, *, message):
+    await ctx.message.delete()
+    await Nax.change_presence(
+        activity=discord.Activity(
+            type=discord.ActivityType.listening,
+            name=message,
+        ))
+
+
+@Nax.command(aliases=["watch", "w"])
+async def watching(ctx, *, message):
+    await ctx.message.delete()
+    await Nax.change_presence(
+        activity=discord.Activity(
+            type=discord.ActivityType.watching,
+            name=message
+        ))
+
+
+@Nax.command(aliases=["stopstreaming", "stopstatus", "stoplistening", "stopplaying", "stopwatching"])
+async def stopactivity(ctx):
+    await ctx.message.delete()
+    await Nax.change_presence(activity=None, status=discord.Status.dnd)
+
+
+@Nax.command(aliases=["logout"])
+async def shutdown(ctx):
+    await ctx.message.delete()
+    await Nax.logout()
+
+if __name__ == '__main__':
+    Init()
